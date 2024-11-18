@@ -1,13 +1,11 @@
-package dao;
+package repository;
 
 import entity.Customer;
-import entity.Location;
-import entity.Ride;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CustomerDao {
+public class CustomerRepository {
     Map<String, Customer> customerMap = new HashMap<>();
 
     // Create

@@ -1,12 +1,11 @@
-package dao;
+package repository;
 
 import entity.Driver;
-import entity.Location;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DriverDao {
+public class DriverRepository {
     Map<String, Driver> driverMap = new HashMap<>();
 
     //Create

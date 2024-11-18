@@ -1,7 +1,5 @@
 package service;
 
-import dao.CustomerDao;
-import dao.DriverDao;
 import entity.Customer;
 import entity.Driver;
 import entity.Location;
@@ -13,27 +11,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static service.InMemory.customerDao;
-import static service.InMemory.driverDao;
+import static service.InMemory.customerRepository;
+import static service.InMemory.driverRepository;
 
 public class CustomerServiceImpl implements CustomerService{
     DriverService driverService = new DriverServiceImpl();
 
     @Override
     public Customer createCustomer(Customer customer) {
-        return customerDao.save(customer);
+        return customerRepository.save(customer);
     }
 
     @Override
     public Customer updateCustomerLocation(String customerName, Location location) {
-        Customer customer = customerDao.find(customerName);
+        Customer customer = customerRepository.find(customerName);
         customer.setCurrLocation(location);
-       return customerDao.update(customer);
+       return customerRepository.update(customer);
     }
 
     @Override
     public void findRide(String customerName, Location start, Location end) {
-        Map<String, Driver> driverMap = driverDao.getAll();
+        Map<String, Driver> driverMap = driverRepository.getAll();
         List<String> driverList = new ArrayList<>();
         for(Map.Entry<String,Driver> entry: driverMap.entrySet()){
             Location riderLocation = entry.getValue().getLocation();
@@ -50,24 +48,24 @@ public class CustomerServiceImpl implements CustomerService{
         }
 
         //update search location of customer
-        Customer customer = customerDao.find(customerName);
+        Customer customer = customerRepository.find(customerName);
         customer.setSearchLocation(end);
-        customerDao.save(customer);
+        customerRepository.save(customer);
         return;
     }
 
     @Override
     public void chooseRide(String customerName, String driverName) {
-        Customer customer = customerDao.find(customerName);
-        Driver driver = driverDao.find(driverName);
+        Customer customer = customerRepository.find(customerName);
+        Driver driver = driverRepository.find(driverName);
         Ride ride = Ride.builder().id(Helper.getId()).customer(customer).driver(driver).start(customer.getCurrLocation()).end(customer.getSearchLocation()).build();
 
         customer.setCurrentRide(ride);
-        customerDao.save(customer);
+        customerRepository.save(customer);
 
         driver.getRides().add(ride);
         driverService.changeDriverStatus(driverName,STATUS.FALSE);
-        driverDao.save(driver);
+        driverRepository.save(driver);
 
         //
         System.out.println("ride started");
@@ -76,9 +74,9 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public void calculateBill(String customerName) {
-        Customer customer = customerDao.find(customerName);
+        Customer customer = customerRepository.find(customerName);
         Ride ride = customer.getCurrentRide();
-        Driver driver = driverDao.find(ride.getDriver().getName());
+        Driver driver = driverRepository.find(ride.getDriver().getName());
 
         System.out.println("ride ended amount = " + Helper.calculateDistance(ride.getEnd(),ride.getStart())*10);
         //ride ended...
@@ -87,13 +85,13 @@ public class CustomerServiceImpl implements CustomerService{
         //update customer location
         customer.setCurrLocation(ride.getEnd());
 
-        customerDao.save(customer);
+        customerRepository.save(customer);
 
         //update driver location
         driver.setLocation(ride.getEnd());
         //set driver staus
         driverService.changeDriverStatus(driver.getName(),STATUS.TRUE);
-        driverDao.save(driver);
+        driverRepository.save(driver);
 
         return;
     }

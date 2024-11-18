@@ -1,13 +1,13 @@
 package service;
 
-import dao.CustomerDao;
-import dao.DriverDao;
+import repository.CustomerRepository;
+import repository.DriverRepository;
 
 public class InMemory {
-    public static CustomerDao customerDao;
-    public static DriverDao driverDao;
+    public static CustomerRepository customerRepository;
+    public static DriverRepository driverRepository;
     public InMemory() {
-        customerDao=new CustomerDao();
-        driverDao=new DriverDao();
+        customerRepository =new CustomerRepository();
+        driverRepository =new DriverRepository();
     }
 }

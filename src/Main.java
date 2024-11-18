@@ -1,4 +1,3 @@
-import dao.CustomerDao;
 import entity.Customer;
 import entity.Driver;
 import entity.Location;
@@ -9,8 +8,8 @@ import service.InMemory;
 
 import java.util.ArrayList;
 
-import static service.InMemory.customerDao;
-import static service.InMemory.driverDao;
+import static service.InMemory.customerRepository;
+import static service.InMemory.driverRepository;
 
 public class Main {
     public static void main(String[] args) {
@@ -69,8 +68,8 @@ public class Main {
         driverService.createDriver(driver2);
         driverService.createDriver(driver1);
 
-        System.out.println(customerDao.getAll());
-        System.out.println(driverDao.getAll());
+        System.out.println(customerRepository.getAll());
+        System.out.println(driverRepository.getAll());
         driverService.changeDriverStatus("Bob", STATUS.TRUE);
         driverService.changeDriverStatus("Charlie", STATUS.TRUE);
 

@@ -4,9 +4,10 @@ import entity.Customer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CustomerRepository {
-    Map<String, Customer> customerMap = new HashMap<>();
+    Map<String, Customer> customerMap = new ConcurrentHashMap<>();
 
     // Create
     public Customer save(Customer customer) {

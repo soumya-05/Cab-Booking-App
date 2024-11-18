@@ -16,9 +16,11 @@ public class DriverServiceImpl implements DriverService{
     }
     @Override
     public void changeDriverStatus(String driverName, STATUS status) {
-        Driver driver = driverRepository.find(driverName);
-        driver.setStatus(status);
-        driverRepository.save(driver);
+        synchronized (this) {
+            Driver driver = driverRepository.find(driverName);
+            driver.setStatus(status);
+            driverRepository.save(driver);
+        }
     }
 
 

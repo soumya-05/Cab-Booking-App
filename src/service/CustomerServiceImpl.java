@@ -25,8 +25,10 @@ public class CustomerServiceImpl implements CustomerService{
     @Override
     public Customer updateCustomerLocation(String customerName, Location location) {
         Customer customer = customerRepository.find(customerName);
-        customer.setCurrLocation(location);
-       return customerRepository.update(customer);
+        synchronized (this) {
+            customer.setCurrLocation(location);
+            return customerRepository.update(customer);
+        }
     }
 
     @Override
@@ -48,9 +50,11 @@ public class CustomerServiceImpl implements CustomerService{
         }
 
         //update search location of customer
-        Customer customer = customerRepository.find(customerName);
-        customer.setSearchLocation(end);
-        customerRepository.save(customer);
+        synchronized (this) {
+            Customer customer = customerRepository.find(customerName);
+            customer.setSearchLocation(end);
+            customerRepository.save(customer);
+        }
         return;
     }
 
@@ -60,12 +64,15 @@ public class CustomerServiceImpl implements CustomerService{
         Driver driver = driverRepository.find(driverName);
         Ride ride = Ride.builder().id(Helper.getId()).customer(customer).driver(driver).start(customer.getCurrLocation()).end(customer.getSearchLocation()).build();
 
-        customer.setCurrentRide(ride);
-        customerRepository.save(customer);
 
-        driver.getRides().add(ride);
-        driverService.changeDriverStatus(driverName,STATUS.FALSE);
-        driverRepository.save(driver);
+        synchronized (this) {
+            customer.setCurrentRide(ride);
+            customerRepository.save(customer);
+
+            driver.getRides().add(ride);
+            driverService.changeDriverStatus(driverName, STATUS.FALSE);
+            driverRepository.save(driver);
+        }
 
         //
         System.out.println("ride started");
@@ -80,18 +87,20 @@ public class CustomerServiceImpl implements CustomerService{
 
         System.out.println("ride ended amount = " + Helper.calculateDistance(ride.getEnd(),ride.getStart())*10);
         //ride ended...
-        // remove current ride from customer
-        customer.setCurrentRide(null);
-        //update customer location
-        customer.setCurrLocation(ride.getEnd());
+        synchronized (this) {
+            // remove current ride from customer
+            customer.setCurrentRide(null);
+            //update customer location
+            customer.setCurrLocation(ride.getEnd());
 
-        customerRepository.save(customer);
+            customerRepository.save(customer);
 
-        //update driver location
-        driver.setLocation(ride.getEnd());
-        //set driver staus
-        driverService.changeDriverStatus(driver.getName(),STATUS.TRUE);
-        driverRepository.save(driver);
+            //update driver location
+            driver.setLocation(ride.getEnd());
+            //set driver staus
+            driverService.changeDriverStatus(driver.getName(), STATUS.TRUE);
+            driverRepository.save(driver);
+        }
 
         return;
     }

@@ -4,9 +4,10 @@ import entity.Driver;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DriverRepository {
-    Map<String, Driver> driverMap = new HashMap<>();
+    Map<String, Driver> driverMap = new ConcurrentHashMap<>();
 
     //Create
     public Driver save(Driver driver){

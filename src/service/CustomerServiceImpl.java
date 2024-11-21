@@ -27,7 +27,7 @@ public class CustomerServiceImpl implements CustomerService{
         Customer customer = customerRepository.find(customerName);
         synchronized (this) {
             customer.setCurrLocation(location);
-            return customerRepository.update(customer);
+            return customerRepository.save(customer);
         }
     }
 

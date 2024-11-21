@@ -9,9 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CustomerRepository {
     Map<String, Customer> customerMap = new ConcurrentHashMap<>();
 
-    // Create
+    // Create and Update
     public Customer save(Customer customer) {
-        return customerMap.putIfAbsent(customer.getName(), customer);
+
+        return customerMap.put(customer.getName(), customer);
     }
 
     // Read
@@ -25,10 +26,10 @@ public class CustomerRepository {
     }
 
     // Update
-    public Customer update(Customer customer) {
-        validate(customer.getName());
-        return save(customer);
-    }
+//    public Customer update(Customer customer) {
+//        validate(customer.getName());
+//        return save(customer);
+//    }
 
     // Remove
     public void delete(String customerName) {

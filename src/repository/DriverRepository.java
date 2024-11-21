@@ -9,9 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DriverRepository {
     Map<String, Driver> driverMap = new ConcurrentHashMap<>();
 
-    //Create
+    //Create and Update
     public Driver save(Driver driver){
-        return driverMap.putIfAbsent(driver.getName(),driver);
+
+        return driverMap.put(driver.getName(),driver);
     }
 
     //Read
@@ -24,10 +25,10 @@ public class DriverRepository {
     }
 
     //Update
-    public Driver update(Driver driver){
-        validate(driver.getName());
-        return save(driver);
-    }
+//    public Driver update(Driver driver){
+//        validate(driver.getName());
+//        return save(driver);
+//    }
 
     //Remove
     public void delete(String driverName){
